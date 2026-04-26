@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarCheck — Temukan Kelayakan Beasiswamu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- ░░ CURSOR GLOW ░░ -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ░░ NAVBAR ░░ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-gem">◆</div>
+      <span class="nav-wordmark">Scholar<em>Check</em></span>
+    </div>
+    <div class="nav-right">
+      <span class="nav-tag">Fuzzy · Mamdani</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ░░ HERO ░░ -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      Sistem Penilaian Cerdas
+    </div>
+    <h1 class="hero-title">
+      Seberapa Layak<br>
+      <span class="hero-title-em">Kamu Mendapat</span><br>
+      Beasiswa?
+    </h1>
+    <p class="hero-subtitle">
+      Isi data akademik & ekonomimu — sistem kami akan menganalisis menggunakan<br>
+      <strong>logika fuzzy Mamdani</strong> dengan 81 aturan keputusan.
+    </p>
+    <div class="hero-scroll-cue">
+      <span>Mulai sekarang</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ FORM SECTION ░░ -->
+<section class="form-section" id="formSection">
+  <div class="form-grid">
+
+    <!-- ── LEFT: FORM ── -->
+    <div class="form-col">
+      <div class="section-label">01 — Data Diri</div>
+
+      <!-- IPK -->
+      <div class="fgroup" id="fg-ipk">
+        <div class="flabel-row">
+          <label class="flabel">Indeks Prestasi Kumulatif <sup class="req">*</sup></label>
+          <span class="frange">0.00 – 4.00</span>
+        </div>
+        <div class="finput-wrap" id="iw-ipk">
+          <input type="number" id="ipk" min="0" max="4" step="0.01"
+                 placeholder="Masukkan IPK kamu…"
+                 oninput="syncInput('ipk')" onblur="validateIPK()"/>
+          <span class="finput-unit">/ 4.00</span>
+        </div>
+        <div class="fslider-row">
+          <input type="range" class="fslider" id="ipk-slider" min="0" max="4" step="0.01" value="0"
+                 oninput="syncSlider('ipk', v => parseFloat(v).toFixed(2))"/>
+          <span class="fslider-val" id="ipk-val">—</span>
+        </div>
+        <div class="ferror" id="fe-ipk"></div>
+      </div>
+
+      <!-- Penghasilan -->
+      <div class="fgroup" id="fg-pgh">
+        <div class="flabel-row">
+          <label class="flabel">Penghasilan Orang Tua / Bulan <sup class="req">*</sup></label>
+          <span class="frange">dalam Rupiah</span>
+        </div>
+        <div class="finput-wrap" id="iw-pgh">
+          <span class="finput-pre">Rp</span>
+          <input type="number" id="penghasilan" min="0" step="50000"
+                 placeholder="Nominal penghasilan per bulan…"
+                 oninput="syncInput('penghasilan')" onblur="validatePenghasilan()"/>
+        </div>
+        <div class="fslider-row">
+          <input type="range" class="fslider" id="penghasilan-slider" min="0" max="15000000" step="50000" value="0"
+                 oninput="syncSlider('penghasilan', v => 'Rp ' + parseInt(v).toLocaleString('id-ID'))"/>
+          <span class="fslider-val" id="penghasilan-val">—</span>
+        </div>
+        <div class="ferror" id="fe-pgh"></div>
+      </div>
+
+      <!-- Tanggungan -->
+      <div class="fgroup" id="fg-tg">
+        <div class="flabel-row">
+          <label class="flabel">Jumlah Tanggungan Keluarga <sup class="req">*</sup></label>
+          <span class="frange">jumlah orang</span>
+        </div>
+        <div class="finput-wrap" id="iw-tg">
+          <input type="number" id="tanggungan" min="0" step="1"
+                 placeholder="Berapa orang yang ditanggung…"
+                 oninput="syncInput('tanggungan')" onblur="validateTanggungan()"/>
+          <span class="finput-unit">orang</span>
+        </div>
+        <div class="fslider-row">
+          <input type="range" class="fslider" id="tanggungan-slider" min="0" max="15" step="1" value="0"
+                 oninput="syncSlider('tanggungan', v => v + ' orang')"/>
+          <span class="fslider-val" id="tanggungan-val">—</span>
+        </div>
+        <div class="ferror" id="fe-tg"></div>
+      </div>
+
+      <!-- ── PRESTASI ── -->
+      <div class="section-label" style="margin-top:2.5rem">02 — Prestasi Non-Akademik <span class="opt-pill">Opsional</span></div>
+      <p class="prestasi-note">Punya kejuaraan? Tambahkan dan sistem akan menghitung bobotnya secara otomatis. Maks. 3 prestasi.</p>
+
+      <div id="prestasi-container"></div>
+
+      <button class="btn-add" id="btn-add" onclick="tambahPrestasi()">
+        <span class="btn-add-plus">＋</span> Tambah Prestasi
+      </button>
+
+      <!-- SUBMIT -->
+      <button class="btn-submit" onclick="hitungKelayakan()">
+        <span class="btn-submit-text">Analisis Kelayakanku</span>
+        <span class="btn-submit-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- ── RIGHT: RESULT ── -->
+    <div class="result-col" id="resultCol">
+
+      <!-- Placeholder -->
+      <div class="result-state" id="rstate-idle">
+        <div class="idle-art">
+          <div class="idle-ring idle-ring-1"></div>
+          <div class="idle-ring idle-ring-2"></div>
+          <div class="idle-ring idle-ring-3"></div>
+          <div class="idle-gem">◆</div>
+        </div>
+        <p class="idle-title">Menunggu Data</p>
+        <p class="idle-sub">Isi formulir di sebelah kiri untuk memulai analisis kelayakan beasiswa kamu.</p>
+      </div>
+
+      <!-- Loading -->
+      <div class="result-state" id="rstate-loading" style="display:none">
+        <div class="loading-orbs">
+          <div class="lorb lorb-1"></div>
+          <div class="lorb lorb-2"></div>
+          <div class="lorb lorb-3"></div>
+        </div>
+        <p class="idle-sub" style="margin-top:1.5rem">Menghitung dengan 81 aturan fuzzy…</p>
+      </div>
+
+      <!-- Result -->
+      <div id="rstate-result" style="display:none">
+
+        <!-- Skor besar -->
+        <div class="result-header" id="result-header">
+          <div class="result-score-wrap">
+            <svg class="gauge-svg" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" id="grad-stop-1" stop-color="#34d399"/>
+                  <stop offset="100%" id="grad-stop-2" stop-color="#059669"/>
+                </linearGradient>
+              </defs>
+              <!-- Track -->
+              <circle cx="100" cy="100" r="82" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="14"/>
+              <!-- Fill -->
+              <circle id="gauge-arc" cx="100" cy="100" r="82" fill="none"
+                      stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round"
+                      stroke-dasharray="515" stroke-dashoffset="515"
+                      transform="rotate(-90 100 100)"
+                      style="transition:stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)"/>
+              <!-- Number -->
+              <text id="gauge-num" x="100" y="95" text-anchor="middle"
+                    font-family="Fraunces" font-size="42" font-weight="900" fill="white">0</text>
+              <text x="100" y="118" text-anchor="middle"
+                    font-family="DM Sans" font-size="11" fill="rgba(255,255,255,.5)"
+                    letter-spacing="2">SKOR</text>
+            </svg>
+          </div>
+          <div class="result-meta">
+            <div class="result-kategori" id="result-kategori">—</div>
+            <div class="result-desc" id="result-desc">—</div>
+            <div class="result-chips" id="result-chips"></div>
+          </div>
+        </div>
+
+        <!-- Prestasi yang dipakai -->
+        <div class="result-block" id="pr-used-block" style="display:none">
+          <div class="rblock-title">🏆 Prestasi Disertakan</div>
+          <div id="pr-used-list"></div>
+        </div>
+
+        <!-- Membership bars -->
+        <div class="result-block">
+          <div class="rblock-title">Derajat Keanggotaan Fuzzy</div>
+          <div id="mb-bars"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /form-grid -->
+</section>
+
+<!-- ░░ INFO STRIP ░░ -->
+<section class="info-section">
+  <div class="info-inner">
+    <div class="info-heading">
+      <span class="info-label">Tahukah Kamu?</span>
+      <h2 class="info-title">Tips Lolos Seleksi Beasiswa</h2>
+    </div>
+    <div class="info-cards">
+      <div class="icard">
+        <div class="icard-icon">📈</div>
+        <h3>IPK Bukan Satu-Satunya</h3>
+        <p>Banyak beasiswa mempertimbangkan prestasi non-akademik, kepemimpinan, dan keterlibatan sosial — bukan hanya nilai.</p>
+      </div>
+      <div class="icard">
+        <div class="icard-icon">📝</div>
+        <h3>Esai yang Jujur Menang</h3>
+        <p>Ceritakan perjuangan nyata dalam esai motivasi. Juri beasiswa lebih tergerak oleh autentisitas daripada kalimat sempurna.</p>
+      </div>
+      <div class="icard">
+        <div class="icard-icon">⏰</div>
+        <h3>Daftar Lebih dari Satu</h3>
+        <p>Rata-rata penerima beasiswa mendaftar ke 5–10 program. Jangan andalkan satu pintu — perbanyak kesempatan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ FOOTER ░░ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">◆ ScholarCheck</div>
+    <p class="footer-copy">Sistem Penilaian Kelayakan Beasiswa · Logika Fuzzy Mamdani · Python & Flask</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
