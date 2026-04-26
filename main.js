@@ -1,3 +1,190 @@
+const FUZZY_RULES = [
+  ['tinggi', 'rendah', 'banyak', 'tinggi', 'sangat_layak'],
+  ['tinggi', 'rendah', 'banyak', 'sedang', 'sangat_layak'],
+  ['tinggi', 'rendah', 'banyak', 'rendah', 'sangat_layak'],
+  ['tinggi', 'rendah', 'sedang', 'tinggi', 'sangat_layak'],
+  ['tinggi', 'rendah', 'sedang', 'sedang', 'layak'],
+  ['tinggi', 'rendah', 'sedang', 'rendah', 'layak'],
+  ['tinggi', 'rendah', 'sedikit', 'tinggi', 'layak'],
+  ['tinggi', 'rendah', 'sedikit', 'sedang', 'layak'],
+  ['tinggi', 'rendah', 'sedikit', 'rendah', 'cukup_layak'],
+  ['tinggi', 'sedang', 'banyak', 'tinggi', 'layak'],
+  ['tinggi', 'sedang', 'banyak', 'sedang', 'layak'],
+  ['tinggi', 'sedang', 'banyak', 'rendah', 'cukup_layak'],
+  ['tinggi', 'sedang', 'sedang', 'tinggi', 'cukup_layak'],
+  ['tinggi', 'sedang', 'sedang', 'sedang', 'cukup_layak'],
+  ['tinggi', 'sedang', 'sedang', 'rendah', 'kurang_layak'],
+  ['tinggi', 'sedang', 'sedikit', 'tinggi', 'cukup_layak'],
+  ['tinggi', 'sedang', 'sedikit', 'sedang', 'kurang_layak'],
+  ['tinggi', 'sedang', 'sedikit', 'rendah', 'kurang_layak'],
+  ['tinggi', 'tinggi', 'banyak', 'tinggi', 'cukup_layak'],
+  ['tinggi', 'tinggi', 'banyak', 'sedang', 'kurang_layak'],
+  ['tinggi', 'tinggi', 'banyak', 'rendah', 'kurang_layak'],
+  ['tinggi', 'tinggi', 'sedang', 'tinggi', 'kurang_layak'],
+  ['tinggi', 'tinggi', 'sedang', 'sedang', 'tidak_layak'],
+  ['tinggi', 'tinggi', 'sedang', 'rendah', 'tidak_layak'],
+  ['tinggi', 'tinggi', 'sedikit', 'tinggi', 'kurang_layak'],
+  ['tinggi', 'tinggi', 'sedikit', 'sedang', 'tidak_layak'],
+  ['tinggi', 'tinggi', 'sedikit', 'rendah', 'tidak_layak'],
+  ['sedang', 'rendah', 'banyak', 'tinggi', 'layak'],
+  ['sedang', 'rendah', 'banyak', 'sedang', 'cukup_layak'],
+  ['sedang', 'rendah', 'banyak', 'rendah', 'cukup_layak'],
+  ['sedang', 'rendah', 'sedang', 'tinggi', 'cukup_layak'],
+  ['sedang', 'rendah', 'sedang', 'sedang', 'cukup_layak'],
+  ['sedang', 'rendah', 'sedang', 'rendah', 'kurang_layak'],
+  ['sedang', 'rendah', 'sedikit', 'tinggi', 'cukup_layak'],
+  ['sedang', 'rendah', 'sedikit', 'sedang', 'kurang_layak'],
+  ['sedang', 'rendah', 'sedikit', 'rendah', 'kurang_layak'],
+  ['sedang', 'sedang', 'banyak', 'tinggi', 'cukup_layak'],
+  ['sedang', 'sedang', 'banyak', 'sedang', 'kurang_layak'],
+  ['sedang', 'sedang', 'banyak', 'rendah', 'kurang_layak'],
+  ['sedang', 'sedang', 'sedang', 'tinggi', 'kurang_layak'],
+  ['sedang', 'sedang', 'sedang', 'sedang', 'tidak_layak'],
+  ['sedang', 'sedang', 'sedang', 'rendah', 'tidak_layak'],
+  ['sedang', 'sedang', 'sedikit', 'tinggi', 'kurang_layak'],
+  ['sedang', 'sedang', 'sedikit', 'sedang', 'tidak_layak'],
+  ['sedang', 'sedang', 'sedikit', 'rendah', 'tidak_layak'],
+  ['sedang', 'tinggi', 'banyak', 'tinggi', 'kurang_layak'],
+  ['sedang', 'tinggi', 'banyak', 'sedang', 'tidak_layak'],
+  ['sedang', 'tinggi', 'banyak', 'rendah', 'tidak_layak'],
+  ['sedang', 'tinggi', 'sedang', 'tinggi', 'tidak_layak'],
+  ['sedang', 'tinggi', 'sedang', 'sedang', 'tidak_layak'],
+  ['sedang', 'tinggi', 'sedang', 'rendah', 'tidak_layak'],
+  ['sedang', 'tinggi', 'sedikit', 'tinggi', 'tidak_layak'],
+  ['sedang', 'tinggi', 'sedikit', 'sedang', 'tidak_layak'],
+  ['sedang', 'tinggi', 'sedikit', 'rendah', 'tidak_layak'],
+  ['rendah', 'rendah', 'banyak', 'tinggi', 'cukup_layak'],
+  ['rendah', 'rendah', 'banyak', 'sedang', 'kurang_layak'],
+  ['rendah', 'rendah', 'banyak', 'rendah', 'kurang_layak'],
+  ['rendah', 'rendah', 'sedang', 'tinggi', 'kurang_layak'],
+  ['rendah', 'rendah', 'sedang', 'sedang', 'tidak_layak'],
+  ['rendah', 'rendah', 'sedang', 'rendah', 'tidak_layak'],
+  ['rendah', 'rendah', 'sedikit', 'tinggi', 'kurang_layak'],
+  ['rendah', 'rendah', 'sedikit', 'sedang', 'tidak_layak'],
+  ['rendah', 'rendah', 'sedikit', 'rendah', 'tidak_layak'],
+  ['rendah', 'sedang', 'banyak', 'tinggi', 'kurang_layak'],
+  ['rendah', 'sedang', 'banyak', 'sedang', 'tidak_layak'],
+  ['rendah', 'sedang', 'banyak', 'rendah', 'tidak_layak'],
+  ['rendah', 'sedang', 'sedang', 'tinggi', 'tidak_layak'],
+  ['rendah', 'sedang', 'sedang', 'sedang', 'tidak_layak'],
+  ['rendah', 'sedang', 'sedang', 'rendah', 'tidak_layak'],
+  ['rendah', 'sedang', 'sedikit', 'tinggi', 'tidak_layak'],
+  ['rendah', 'sedang', 'sedikit', 'sedang', 'tidak_layak'],
+  ['rendah', 'sedang', 'sedikit', 'rendah', 'tidak_layak'],
+  ['rendah', 'tinggi', 'banyak', 'tinggi', 'tidak_layak'],
+  ['rendah', 'tinggi', 'banyak', 'sedang', 'tidak_layak'],
+  ['rendah', 'tinggi', 'banyak', 'rendah', 'tidak_layak'],
+  ['rendah', 'tinggi', 'sedang', 'tinggi', 'tidak_layak'],
+  ['rendah', 'tinggi', 'sedang', 'sedang', 'tidak_layak'],
+  ['rendah', 'tinggi', 'sedang', 'rendah', 'tidak_layak'],
+  ['rendah', 'tinggi', 'sedikit', 'tinggi', 'tidak_layak'],
+  ['rendah', 'tinggi', 'sedikit', 'sedang', 'tidak_layak'],
+  ['rendah', 'tinggi', 'sedikit', 'rendah', 'tidak_layak'],
+];
+
+
+const BOBOT_TINGKAT = {'lokal': 20, 'provinsi': 40, 'nasional': 70, 'internasional': 100};
+const BOBOT_JUARA = {'1': 1.00, '2': 0.75, '3': 0.50, 'harapan': 0.25};
+
+function hitungSkorPrestasi(prestasi_list) {
+    if (!prestasi_list || prestasi_list.length === 0) return 0.0;
+    let scores = [];
+    for (let i = 0; i < Math.min(3, prestasi_list.length); i++) {
+        let p = prestasi_list[i];
+        let base = BOBOT_TINGKAT[String(p.tingkat).toLowerCase()] || 0;
+        let juara = String(p.juara).toLowerCase();
+        let mult = BOBOT_JUARA[juara] || 0;
+        scores.push(base * mult);
+    }
+    scores.sort((a, b) => b - a);
+    let total = 0;
+    if (scores.length === 1) total = scores[0];
+    else if (scores.length === 2) total = scores[0] + scores[1] * 0.30;
+    else total = scores[0] + scores[1] * 0.30 + scores[2] * 0.15;
+    return Math.min(Math.round(total * 100) / 100, 100.0);
+}
+
+function hitungFuzzy(ipk, penghasilan, tanggungan, prestasi_list) {
+    let skor_prestasi = hitungSkorPrestasi(prestasi_list);
+    let pgh = Math.min(parseFloat(penghasilan), 10000000);
+    let tg = Math.min(parseInt(tanggungan), 10);
+    ipk = parseFloat(ipk);
+
+    let mu = {
+        ipk: {
+            rendah: trimf(ipk, 0.00, 0.00, 2.75),
+            sedang: trimf(ipk, 2.25, 3.00, 3.50),
+            tinggi: trimf(ipk, 3.00, 4.00, 4.00)
+        },
+        penghasilan: {
+            rendah: trimf(pgh, 0, 0, 2500000),
+            sedang: trimf(pgh, 1500000, 4000000, 6500000),
+            tinggi: trimf(pgh, 5000000, 10000000, 10000000)
+        },
+        tanggungan: {
+            sedikit: trimf(tg, 0, 0, 3),
+            sedang:  trimf(tg, 2, 5, 7),
+            banyak:  trimf(tg, 5, 10, 10)
+        },
+        prestasi: {
+            rendah: trimf(skor_prestasi, 0, 0, 40),
+            sedang: trimf(skor_prestasi, 25, 50, 75),
+            tinggi: trimf(skor_prestasi, 60, 100, 100)
+        }
+    };
+
+    let rule_outputs = {
+        tidak_layak: [],
+        kurang_layak: [],
+        cukup_layak: [],
+        layak: [],
+        sangat_layak: []
+    };
+
+    for (let r of FUZZY_RULES) {
+        let v_ipk = mu.ipk[r[0]];
+        let v_pgh = mu.penghasilan[r[1]];
+        let v_tg = mu.tanggungan[r[2]];
+        let v_pr = mu.prestasi[r[3]];
+        let fire_strength = Math.min(v_ipk, v_pgh, v_tg, v_pr);
+        if (fire_strength > 0) {
+            rule_outputs[r[4]].push(fire_strength);
+        }
+    }
+
+    let agg = {
+        tidak_layak: rule_outputs.tidak_layak.length ? Math.max(...rule_outputs.tidak_layak) : 0,
+        kurang_layak: rule_outputs.kurang_layak.length ? Math.max(...rule_outputs.kurang_layak) : 0,
+        cukup_layak: rule_outputs.cukup_layak.length ? Math.max(...rule_outputs.cukup_layak) : 0,
+        layak: rule_outputs.layak.length ? Math.max(...rule_outputs.layak) : 0,
+        sangat_layak: rule_outputs.sangat_layak.length ? Math.max(...rule_outputs.sangat_layak) : 0
+    };
+
+    let num = 0;
+    let den = 0;
+    for (let x = 0; x <= 100; x += 1) {
+        let y_tidak = Math.min(agg.tidak_layak, trimf(x, 0, 0, 20));
+        let y_kurang = Math.min(agg.kurang_layak, trimf(x, 10, 25, 40));
+        let y_cukup = Math.min(agg.cukup_layak, trimf(x, 35, 50, 65));
+        let y_layak = Math.min(agg.layak, trimf(x, 60, 75, 88));
+        let y_sangat = Math.min(agg.sangat_layak, trimf(x, 82, 100, 100));
+        let y_max = Math.max(y_tidak, y_kurang, y_cukup, y_layak, y_sangat);
+        num += x * y_max;
+        den += y_max;
+    }
+
+    let skor = den === 0 ? 0 : num / den;
+    skor = Math.round(skor * 100) / 100;
+
+    let kategori = "Tidak Layak", warna = "#f87171";
+    if (skor >= 82) { kategori = "Sangat Layak"; warna = "#10b981"; }
+    else if (skor >= 60) { kategori = "Layak"; warna = "#34d399"; }
+    else if (skor >= 35) { kategori = "Cukup Layak"; warna = "#fbbf24"; }
+    else if (skor >= 10) { kategori = "Kurang Layak"; warna = "#f97316"; }
+
+    return { skor: skor, kategori: kategori, warna: warna, skor_prestasi: skor_prestasi };
+}
+
 /* ================================================================
    main.js — ScholarCheck Premium UI v3
    ================================================================ */
@@ -214,15 +401,17 @@ async function hitungKelayakan() {
   setState('loading');
   document.getElementById('resultCol').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+  
   try {
-    const res  = await fetch('/hitung', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ipk, penghasilan, tanggungan, prestasi })
-    });
-    const data = await res.json();
-    if (data.error) { alert('Error: ' + data.error); setState('idle'); return; }
-    tampilkan(data, { ipk, penghasilan, tanggungan, prestasi });
-  } catch { alert('Tidak dapat terhubung ke server.'); setState('idle'); }
+    const data = hitungFuzzy(ipk, penghasilan, tanggungan, prestasi);
+    setTimeout(() => {
+        tampilkan(data, { ipk, penghasilan, tanggungan, prestasi });
+    }, 800); // Simulate network delay for loading animation
+  } catch (err) {
+    alert('Terjadi kesalahan dalam perhitungan.');
+    setState('idle');
+  }
+
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
@@ -331,9 +520,11 @@ function tampilkan(data, input) {
 
 function trimf(x, a, b, c) {
   x = parseFloat(x);
-  if (x <= a || x >= c) return 0;
+  if (x < a || x > c) return 0;
   if (x === b) return 1;
-  return x < b ? (x - a) / (b - a) : (c - x) / (c - b);
+  if (a !== b && x > a && x < b) return (x - a) / (b - a);
+  if (b !== c && x > b && x < c) return (c - x) / (c - b);
+  return 0;
 }
 
 function setState(s) {
